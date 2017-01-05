@@ -6,13 +6,16 @@ import javax.swing.JFrame;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import javax.swing.JLayeredPane;
-import javax.swing.JButton;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
+import javax.swing.JRadioButton;
+import javax.swing.ButtonGroup;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class JF_Match extends JFrame {
 
@@ -21,6 +24,8 @@ public class JF_Match extends JFrame {
 	private JTextField txtA;
 	private JTextField txtX;
 	private JTextField txtScore;
+	private final ButtonGroup bntGrpLanguage = new ButtonGroup();
+	private JTextField txtTotal;
 
 	/**
 	 * Launch the application.
@@ -43,46 +48,10 @@ public class JF_Match extends JFrame {
 	 */
 	public JF_Match() {
 		
-//Frame Information
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 346, 233);
-		contentPane = new JLayeredPane();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		
-		txtA = new JTextField();
-		txtA.setHorizontalAlignment(SwingConstants.CENTER);
-		txtA.setFont(new Font("MS PMincho", Font.PLAIN, 60));
-		txtA.setText("ば");
-		txtA.setBounds(40, 40, 130, 111);
-		contentPane.add(txtA);
-		txtA.setColumns(10);
-		
-		txtX = new JTextField();
-		txtX.setFont(new Font("MS PMincho", Font.PLAIN, 60));
-		txtX.setHorizontalAlignment(SwingConstants.CENTER);
-		txtX.setText("X");
-		txtX.setBounds(182, 40, 130, 111);
-		contentPane.add(txtX);
-		txtX.setColumns(10);
-		
-		JLabel lblNewLabel = new JLabel("Score");
-		lblNewLabel.setBounds(217, 12, 61, 16);
-		contentPane.add(lblNewLabel);
-		
-		txtScore = new JTextField();
-		txtScore.setHorizontalAlignment(SwingConstants.CENTER);
-		txtScore.setText("500");
-		txtScore.setBounds(255, 7, 61, 26);
-		contentPane.add(txtScore);
-		txtScore.setColumns(10);
-		
-
 //Variables
-		
-ArrayList<String> bucketH = new ArrayList<String>();
+
+		ArrayList<String> bucketH = new ArrayList<String>();
 		
 		bucketH.add("あ"); bucketH.add("い"); bucketH.add("う"); bucketH.add("え"); bucketH.add("お");
 		bucketH.add("か"); bucketH.add("き"); bucketH.add("く"); bucketH.add("け"); bucketH.add("こ");
@@ -110,23 +79,108 @@ ArrayList<String> bucketH = new ArrayList<String>();
 		bucketK.add("ラ"); bucketK.add("リ"); bucketK.add("ル"); bucketK.add("レ"); bucketK.add("ロ");
 		bucketK.add("ワ"); bucketK.add("ヰ");					   bucketK.add("ヱ"); bucketK.add("ヲ");
 		bucketK.add("ン");
-		
-		
-//Actions		
-		
-		JButton btnCheck = new JButton("Check");
-		btnCheck.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
 				
-				Integer score = Integer.valueOf(txtScore.getText());
-				score = guess(score,txtA.getText(),txtX.getText());
-				txtScore.setText(score.toString());
-				txtA.setText(newPos(bucketK));
-				txtX.setText("");
+		
+//Frame Information
+		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 346, 248);
+		contentPane = new JLayeredPane();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		txtA = new JTextField();
+		txtA.setText(newPos(bucketH));
+		txtA.setEnabled(false);
+		txtA.setHorizontalAlignment(SwingConstants.CENTER);
+		txtA.setFont(new Font("MS PMincho", Font.PLAIN, 60));
+		txtA.setBounds(31, 75, 130, 111);
+		contentPane.add(txtA);
+		txtA.setColumns(10);
+		
+		JLabel lblNewLabel = new JLabel("Score");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblNewLabel.setBounds(227, 12, 61, 16);
+		contentPane.add(lblNewLabel);
+		
+		txtScore = new JTextField();
+		txtScore.setEditable(false);
+		txtScore.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		txtScore.setHorizontalAlignment(SwingConstants.CENTER);
+		txtScore.setText("0");
+		txtScore.setBounds(202, 31, 41, 26);
+		contentPane.add(txtScore);
+		txtScore.setColumns(10);
+		
+		JLabel label = new JLabel("/");
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+		label.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		label.setBounds(237, 25, 41, 39);
+		contentPane.add(label);
+		
+		txtTotal = new JTextField();
+		txtTotal.setText("0");
+		txtTotal.setHorizontalAlignment(SwingConstants.CENTER);
+		txtTotal.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		txtTotal.setEditable(false);
+		txtTotal.setColumns(10);
+		txtTotal.setBounds(264, 31, 41, 26);
+		contentPane.add(txtTotal);
+		
+		
+		JRadioButton rdbtnH = new JRadioButton("Hiragana「あ」");
+		rdbtnH.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (rdbtnH.isSelected()) 
+					txtA.setText(newPos(bucketH));
 			}
 		});
-		btnCheck.setBounds(118, 163, 117, 29);
-		contentPane.add(btnCheck);
+		bntGrpLanguage.add(rdbtnH);
+		rdbtnH.setSelected(true);
+		rdbtnH.setBounds(31, 9, 130, 23);
+		contentPane.add(rdbtnH);
+		
+		JRadioButton rdbtnK = new JRadioButton("Katakana「ｱ」");
+		rdbtnK.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (rdbtnK.isSelected()) 
+					txtA.setText(newPos(bucketK));
+			}
+		});
+		bntGrpLanguage.add(rdbtnK);
+		rdbtnK.setBounds(31, 35, 130, 23);
+		contentPane.add(rdbtnK);
+		
+		txtX = new JTextField();
+		txtX.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode()==10){
+					Integer score = Integer.valueOf(txtScore.getText());
+					Integer total = Integer.valueOf(txtTotal.getText());
+					score = guess(score,txtA.getText(),txtX.getText());
+					txtScore.setText(score.toString());
+					if (rdbtnH.isSelected())
+						txtA.setText(newPos(bucketH));
+					if (rdbtnK.isSelected())
+						txtA.setText(newPos(bucketK));
+					txtX.setText("");
+					total ++;
+					txtTotal.setText(total.toString());
+				}
+			}
+		});
+		txtX.setFont(new Font("MS PMincho", Font.PLAIN, 60));
+		txtX.setHorizontalAlignment(SwingConstants.CENTER);
+		txtX.setBounds(173, 75, 130, 111);
+		contentPane.add(txtX);
+		txtX.setColumns(10);
+		
+		
+		
+			
 		
 	}
 	
@@ -138,12 +192,8 @@ ArrayList<String> bucketH = new ArrayList<String>();
 	}
 	
 	public Integer guess(Integer score, String a, String b){
-		if(a.equals(b)){
+		if(a.equals(b))
 			score += 1;
-		} else {
-			score -= 1;
-		}
 		return score;
 	}
-	
 }
