@@ -54,14 +54,14 @@ public class JF_Match extends JFrame {
 		
 		txtA = new JTextField();
 		txtA.setHorizontalAlignment(SwingConstants.CENTER);
-		txtA.setFont(new Font("Arial", Font.PLAIN, 60));
-		txtA.setText("A");
+		txtA.setFont(new Font("MS PMincho", Font.PLAIN, 60));
+		txtA.setText("ば");
 		txtA.setBounds(40, 40, 130, 111);
 		contentPane.add(txtA);
 		txtA.setColumns(10);
 		
 		txtX = new JTextField();
-		txtX.setFont(new Font("Arial", Font.PLAIN, 60));
+		txtX.setFont(new Font("MS PMincho", Font.PLAIN, 60));
 		txtX.setHorizontalAlignment(SwingConstants.CENTER);
 		txtX.setText("X");
 		txtX.setBounds(182, 40, 130, 111);
@@ -82,7 +82,7 @@ public class JF_Match extends JFrame {
 
 //Variables
 		
-		ArrayList<String> bucketH = new ArrayList<String>();
+ArrayList<String> bucketH = new ArrayList<String>();
 		
 		bucketH.add("あ"); bucketH.add("い"); bucketH.add("う"); bucketH.add("え"); bucketH.add("お");
 		bucketH.add("か"); bucketH.add("き"); bucketH.add("く"); bucketH.add("け"); bucketH.add("こ");
@@ -93,7 +93,7 @@ public class JF_Match extends JFrame {
 		bucketH.add("ま"); bucketH.add("み"); bucketH.add("む"); bucketH.add("め"); bucketH.add("も");
 		bucketH.add("や");					 bucketH.add("ゆ"); 				      bucketH.add("よ");
 		bucketH.add("ら"); bucketH.add("り"); bucketH.add("る"); bucketH.add("れ"); bucketH.add("ろ");
-		bucketH.add("わ"); 													      bucketH.add("を");
+		bucketH.add("わ"); 													     bucketH.add("を");
 		bucketH.add("ん");
 		
 		
@@ -106,9 +106,9 @@ public class JF_Match extends JFrame {
 		bucketK.add("ナ"); bucketK.add("ニ"); bucketK.add("ヌ"); bucketK.add("ネ"); bucketK.add("ノ");
 		bucketK.add("ハ"); bucketK.add("ヒ"); bucketK.add("フ"); bucketK.add("ヘ"); bucketK.add("ホ");
 		bucketK.add("マ"); bucketK.add("ミ"); bucketK.add("ム"); bucketK.add("メ"); bucketK.add("モ");
-		bucketK.add("ヤ");					 bucketK.add("ユ"); 				      bucketK.add("ヨ");
+		bucketK.add("ヤ");					bucketK.add("ユ"); 				     bucketK.add("ヨ");
 		bucketK.add("ラ"); bucketK.add("リ"); bucketK.add("ル"); bucketK.add("レ"); bucketK.add("ロ");
-		bucketK.add("ワ"); bucketK.add("ヰ");					bucketK.add("ヱ"); bucketK.add("ヲ");
+		bucketK.add("ワ"); bucketK.add("ヰ");					   bucketK.add("ヱ"); bucketK.add("ヲ");
 		bucketK.add("ン");
 		
 		
