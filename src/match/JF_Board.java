@@ -1,5 +1,12 @@
 package match;
 
+/*
+Color myWhite = new Color(255, 0, 0); // Color white
+int rgb = myWhite.getRGB();
+canvasImage.setRGB(50, 50, rgb);
+System.out.println("DIAY");
+*/
+
 import java.awt.*;
 import java.awt.RenderingHints.Key;
 import java.awt.event.*;
@@ -20,36 +27,31 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class JF_Board {
 
     /** Reference to the original image. */
-    private BufferedImage originalImage;
+	private BufferedImage originalImage;
     /** Image used to make changes. */
     private BufferedImage canvasImage;
     /** The main GUI that might be added to a frame or applet. */
     private JPanel gui;
     /** The color to use when calling clear, text or other 
      * drawing functionality. */
-    private Color color = Color.WHITE;
-    /** General user messages. */
-    private JLabel output = new JLabel("You DooDoodle!");
-
+    private Color colorWhite = Color.WHITE;
+    private Color colorBlack = Color.BLACK;
+    
     private BufferedImage colorSample = new BufferedImage(
             16,16,BufferedImage.TYPE_INT_RGB);
     private JLabel imageLabel;
-    private int activeTool;
-    public static final int SELECTION_TOOL = 0;
-    public static final int DRAW_TOOL = 1;
-    public static final int TEXT_TOOL = 2;
 
-    private Point selectionStart; 
     private Rectangle selection;
     private boolean dirty = false;
-    private Stroke stroke = new BasicStroke(
-            3,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND,1.7f);
+    private Stroke stroke = new BasicStroke(15,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND,1.7f);
     private RenderingHints renderingHints;
+    private boolean start = true;
 
     /**
      * @wbp.parser.entryPoint
      */
     public JComponent getGui() {
+    	System.out.println("getGUI");
         if (gui==null) {
             Map<Key, Object> hintsMap = new HashMap<RenderingHints.Key,Object>();
             hintsMap.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
@@ -63,7 +65,25 @@ public class JF_Board {
 
             JPanel imageView = new JPanel(new GridBagLayout());
             imageView.setPreferredSize(new Dimension(480,320));
-            imageLabel = new JLabel(new ImageIcon(canvasImage));
+            
+            
+//////////////
+            
+      		BufferedImage MycanvasImage;
+      		BufferedImage img = null;
+      		try {
+      			img = ImageIO.read(new File("C:/Users/acunaarl/Documents/GitHub/Japaneasy/src/img/year.jpg"));
+      		} catch (IOException ex) {
+      			ex.printStackTrace();
+      		}
+      		MycanvasImage = img;
+      		
+//////////////
+            
+            
+            
+      		
+      		imageLabel = new JLabel(new ImageIcon(canvasImage));
             JScrollPane imageScroll = new JScrollPane(imageView);
             imageView.add(imageLabel);
             imageLabel.addMouseMotionListener(new ImageMouseMotionListener());
@@ -72,48 +92,6 @@ public class JF_Board {
 
             JToolBar tb = new JToolBar();
             tb.setFloatable(false);
-            JButton colorButton = new JButton("Color");
-            colorButton.setMnemonic('o');
-            colorButton.setToolTipText("Choose a Color");
-            ActionListener colorListener = new ActionListener() {
-                public void actionPerformed(ActionEvent arg0) {
-                    Color c = JColorChooser.showDialog(
-                            gui, "Choose a color", color);
-                    if (c!=null) {
-                        setColor(c);
-                    }
-                }
-            };
-            colorButton.addActionListener(colorListener);
-            colorButton.setIcon(new ImageIcon(colorSample));
-            tb.add(colorButton);
-
-            setColor(color);
-
-            final SpinnerNumberModel strokeModel = 
-                    new SpinnerNumberModel(3,1,16,1);
-            JSpinner strokeSize = new JSpinner(strokeModel);
-            ChangeListener strokeListener = new ChangeListener() {
-                @Override
-                public void stateChanged(ChangeEvent arg0) {
-                    Object o = strokeModel.getValue();
-                    Integer i = (Integer)o; 
-                    stroke = new BasicStroke(
-                            i.intValue(),
-                            BasicStroke.CAP_ROUND,
-                            BasicStroke.JOIN_ROUND,
-                            1.7f);
-                }
-            };
-            strokeSize.addChangeListener(strokeListener);
-            strokeSize.setMaximumSize(strokeSize.getPreferredSize());
-            JLabel strokeLabel = new JLabel("Stroke");
-            strokeLabel.setLabelFor(strokeSize);
-            strokeLabel.setDisplayedMnemonic('t');
-            tb.add(strokeLabel);
-            tb.add(strokeSize);
-
-            tb.addSeparator();
 
             ActionListener clearListener = new ActionListener() {
                 public void actionPerformed(ActionEvent arg0) {
@@ -143,41 +121,17 @@ public class JF_Board {
 
             JToolBar tools = new JToolBar(JToolBar.VERTICAL);
             tools.setFloatable(false);
-            JButton crop = new JButton("Crop");
-            final JRadioButton select = new JRadioButton("Select", true);
             final JRadioButton draw = new JRadioButton("Draw");
-            final JRadioButton text = new JRadioButton("Text");
+            draw.setSelected(true);       
+            tools.add(draw); 
 
-            tools.add(crop);            
-            tools.add(select);          
-            tools.add(draw);            
-            tools.add(text);
 
-            ButtonGroup bg = new ButtonGroup();
-            bg.add(select);
-            bg.add(text);
-            bg.add(draw);
-            ActionListener toolGroupListener = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent ae) {
-                    if (ae.getSource()==select) {
-                        activeTool = SELECTION_TOOL;
-                    } else if (ae.getSource()==draw) {
-                        activeTool = DRAW_TOOL;
-                    } else if (ae.getSource()==text) {
-                        activeTool = TEXT_TOOL;
-                    }
-                }
-            };
-            select.addActionListener(toolGroupListener);
-            draw.addActionListener(toolGroupListener);
-            text.addActionListener(toolGroupListener);
+
 
             gui.add(tools, BorderLayout.LINE_END);
-
-            gui.add(output,BorderLayout.PAGE_END);
             clear(colorSample);
             clear(canvasImage);
+            
         }
 
         return gui;
@@ -185,10 +139,10 @@ public class JF_Board {
 
     /** Clears the entire image area by painting it with the current color. */
     public void clear(BufferedImage bi) {
-
+    	System.out.println("clear");
         Graphics2D g = bi.createGraphics();
         g.setRenderingHints(renderingHints);
-        g.setColor(color);
+        g.setColor(colorWhite);                                         // COLOR DEL FONDO
         g.fillRect(0, 0, bi.getWidth(), bi.getHeight());
 
         g.dispose();
@@ -197,6 +151,7 @@ public class JF_Board {
    
     
     public void medir(){
+    	System.out.println("medir");
     ////WILSON START
     	
   	  BufferedImage img;
@@ -218,8 +173,8 @@ public class JF_Board {
     	int gris = 0;
     	int negro = 0;
     	  
-        for(int x=1; x<320; x++){
-      	  for(int y=1; y<240; y++){
+        for(int x=1; x<160; x++){
+      	  for(int y=1; y<120; y++){
       		  // Getting pixel color by position x and y 
           	  int clr=  img.getRGB(x,y); 
           	  int  red   = (clr & 0x00ff0000) >> 16;
@@ -240,8 +195,11 @@ public class JF_Board {
   	  
   	////WILSON END
     }
+    
+    
 
     public void setImage(BufferedImage image) {
+    	System.out.println("setImage");
         this.originalImage = image;
         int w = image.getWidth();
         int h = image.getHeight();
@@ -260,129 +218,13 @@ public class JF_Board {
         if (gui!=null) {
             gui.invalidate();
         }
+        
+        
     }
 
-    /** Set the current painting color and refresh any elements needed. */
-    public void setColor(Color color) {
-        this.color = color;
-        clear(colorSample);
-    }
-
-    private JMenu getFileMenu(boolean webstart){
-        JMenu file = new JMenu("File");
-        file.setMnemonic('f');
-
-        JMenuItem newImageItem = new JMenuItem("New");
-        newImageItem.setMnemonic('n');
-        ActionListener newImage = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                BufferedImage bi = new BufferedImage(
-                        360, 300, BufferedImage.TYPE_INT_ARGB);
-                clear(bi);
-                setImage(bi);
-            }
-        };
-        newImageItem.addActionListener(newImage);
-        file.add(newImageItem);
-
-        if (webstart) {
-            //TODO Add open/save functionality using JNLP API
-        } else {
-            //TODO Add save functionality using J2SE API
-            file.addSeparator();
-            ActionListener openListener = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent arg0) {
-                    if (!dirty) {
-                        JFileChooser ch = getFileChooser();
-                        int result = ch.showOpenDialog(gui);
-                        if (result==JFileChooser.APPROVE_OPTION ) {
-                            try {
-                                BufferedImage bi = ImageIO.read(
-                                        ch.getSelectedFile());
-                                setImage(bi);
-                            } catch (IOException e) {
-                                showError(e);
-                                e.printStackTrace();
-                            }
-                        }
-                    } else {
-                        // TODO
-                        JOptionPane.showMessageDialog(
-                                gui, "TODO - prompt save image..");
-                    }
-                }
-            };
-            JMenuItem openItem = new JMenuItem("Open");
-            openItem.setMnemonic('o');
-            openItem.addActionListener(openListener);
-            file.add(openItem);
-
-            ActionListener saveListener = new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    JFileChooser ch = getFileChooser();
-                    int result = ch.showSaveDialog(gui);
-                    if (result==JFileChooser.APPROVE_OPTION ) {
-                        try {
-                            File f = ch.getSelectedFile();
-                            ImageIO.write(JF_Board.this.canvasImage, "png", f);
-                            JF_Board.this.originalImage = JF_Board.this.canvasImage;
-                            dirty = false;
-                        } catch (IOException ioe) {
-                            showError(ioe);
-                            ioe.printStackTrace();
-                        }
-                    }
-                }
-            };
-            JMenuItem saveItem = new JMenuItem("Save");
-            saveItem.addActionListener(saveListener);
-            saveItem.setMnemonic('s');
-            file.add(saveItem);
-        }
-
-        if (canExit()) {
-            ActionListener exit = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent arg0) {
-                    // TODO Auto-generated method stub
-                    System.exit(0);
-                }
-            };
-            JMenuItem exitItem = new JMenuItem("Exit");
-            exitItem.setMnemonic('x');
-            file.addSeparator();
-            exitItem.addActionListener(exit);
-            file.add(exitItem);
-        }
-
-        return file;
-    }
-
-    private void showError(Throwable t) {
-        JOptionPane.showMessageDialog(
-                gui, 
-                t.getMessage(), 
-                t.toString(), 
-                JOptionPane.ERROR_MESSAGE);
-    }
-
-    JFileChooser chooser = null;
-
-    public JFileChooser getFileChooser() {
-        if (chooser==null) {
-            chooser = new JFileChooser();
-            FileFilter ff = new FileNameExtensionFilter("Image files", ImageIO.getReaderFileSuffixes());
-            chooser.setFileFilter(ff);
-        }
-        return chooser;
-
-    }
 
     public boolean canExit() {
+    	System.out.println("canExit");
         boolean canExit = false;
         SecurityManager sm = System.getSecurityManager();
         if (sm==null) {
@@ -394,20 +236,15 @@ public class JF_Board {
             } catch(Exception stayFalse) {
             }
         }
-
         return canExit;
     }
 
-    public JMenuBar getMenuBar(boolean webstart){
-        JMenuBar mb = new JMenuBar();
-        mb.add(this.getFileMenu(webstart));
-        return mb;
-    }
 
     /**
      * @wbp.parser.entryPoint
      */
     public static void main(String[] args) {
+    	System.out.println("main");
         Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -424,7 +261,6 @@ public class JF_Board {
                 f.setLocationByPlatform(true);
 
                 f.setContentPane(bp.getGui());
-                f.setJMenuBar(bp.getMenuBar(false));
 
                 f.pack();
                 f.setMinimumSize(f.getSize());
@@ -433,63 +269,46 @@ public class JF_Board {
         };
         SwingUtilities.invokeLater(r);
     }
-
-    public void text(Point point) {
-        String text = JOptionPane.showInputDialog(gui, "Text to add", "Text");
-        if (text!=null) {
-            Graphics2D g = this.canvasImage.createGraphics();
-            g.setRenderingHints(renderingHints);
-            g.setColor(this.color);
-            g.setStroke(stroke);
-            int n = 0;
-            g.drawString(text,point.x,point.y);
-            g.dispose();
-            this.imageLabel.repaint();
-        }
-    }
-
+    
+    
+   
     public void draw(Point point) {
+    	System.out.println("draw");
         Graphics2D g = this.canvasImage.createGraphics();
         g.setRenderingHints(renderingHints);
-        g.setColor(this.color);
+        g.setColor(this.colorBlack);
         g.setStroke(stroke);
-        int n = 0;
+        System.out.println("point X = " + point.x);
+        System.out.println("point Y = " + point.y);
+        int n = 0; //Thick of the point
         g.drawLine(point.x, point.y, point.x+n, point.y+n);
         g.dispose();
+        
+        
+        mierda();
+        
         this.imageLabel.repaint();
+        
     }
+    
+    
+    public void mierda(){
+    	Color myWhite = new Color(150, 0, 0); // Color white
+        int rgb = myWhite.getRGB();
+        if(((canvasImage.getRGB(50, 50) & 0x00ff0000) >> 16 )== 0 ){
+        	
+        } else {
+        	canvasImage.setRGB(50, 50, rgb);
+        }
+        System.out.println("DIAY");
+    }
+    
 
     class ImageMouseListener extends MouseAdapter {
-
         @Override
         public void mousePressed(MouseEvent arg0) {
             // TODO Auto-generated method stub
-            if (activeTool==JF_Board.SELECTION_TOOL) {
-                selectionStart = arg0.getPoint();
-            } else if (activeTool==JF_Board.DRAW_TOOL) {
-                // TODO
-                draw(arg0.getPoint());
-            } else if (activeTool==JF_Board.TEXT_TOOL) {
-                // TODO
-                text(arg0.getPoint());
-            } else {
-                JOptionPane.showMessageDialog(
-                        gui, 
-                        "Application error.  :(", 
-                        "Error!", 
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent arg0) {
-            if (activeTool==JF_Board.SELECTION_TOOL) {
-                selection = new Rectangle(
-                        selectionStart.x,
-                        selectionStart.y,
-                        arg0.getPoint().x,
-                        arg0.getPoint().y);
-            }
+            draw(arg0.getPoint());
         }
     }
 
@@ -498,15 +317,7 @@ public class JF_Board {
         @Override
         public void mouseDragged(MouseEvent arg0) {
             reportPositionAndColor(arg0);
-            if (activeTool==JF_Board.SELECTION_TOOL) {
-                selection = new Rectangle(
-                        selectionStart.x,
-                        selectionStart.y,
-                        arg0.getPoint().x-selectionStart.x,
-                        arg0.getPoint().y-selectionStart.y);
-            } else if (activeTool==JF_Board.DRAW_TOOL) {
-                draw(arg0.getPoint());
-            }
+            draw(arg0.getPoint());
         }
 
         @Override
@@ -517,20 +328,6 @@ public class JF_Board {
     }
 
     private void reportPositionAndColor(MouseEvent me) {
-        String text = "";
-        if (activeTool==JF_Board.SELECTION_TOOL) {
-            text += "Selection (X,Y:WxH): " + 
-                    (int)selection.getX() +
-                    "," +
-                    (int)selection.getY() +
-                    ":" +
-                    (int)selection.getWidth() +
-                    "x" +
-                    (int)selection.getHeight();
-        } else {
-            text += "X,Y: " + (me.getPoint().x+1) + "," + (me.getPoint().y+1);
-        }
-        output.setText(text);
     }
 }
 

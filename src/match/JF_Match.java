@@ -1,5 +1,6 @@
 package match;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -13,9 +14,15 @@ import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
+import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class JF_Match extends JFrame {
 
@@ -98,6 +105,14 @@ public class JF_Match extends JFrame {
 		txtA.setBounds(31, 75, 130, 111);
 		contentPane.add(txtA);
 		txtA.setColumns(10);
+
+//KANJI
+//		txtA.setText("年");
+//		txtA.setEnabled(true);
+//		txtA.setBounds(31, 75, 320, 240);;
+//		txtA.setFont(new Font("MS PMincho", Font.PLAIN, 150));
+//		txtA.setForeground(new Color(150, 150, 150));
+//KANJI		
 		
 		JLabel lblNewLabel = new JLabel("Score");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -179,8 +194,23 @@ public class JF_Match extends JFrame {
 		txtX.setColumns(10);
 		
 		
-		
-			
+/*		
+		BufferedImage canvasImage;
+		BufferedImage img = null;
+		try {
+			img = ImageIO.read(new File("C:/Users/acunaarl/Documents/GitHub/Japaneasy/src/img/year.jpg"));
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		canvasImage = img;
+
+       
+        JLabel l1 = new JLabel(new ImageIcon(canvasImage));
+		l1.setBounds(131, 185, 46, 14);
+		contentPane.add(l1);
+**/			
+        
+        
 		
 	}
 	
