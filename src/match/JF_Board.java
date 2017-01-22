@@ -19,10 +19,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
+
 
 public class JF_Board {
 
@@ -36,23 +33,22 @@ public class JF_Board {
      * drawing functionality. */
     private Color colorWhite = Color.WHITE;
     private Color colorBlack = Color.BLACK;
+    private Color colorGray = new Color(150, 150, 150); //GRAY COLOR
     
-    private BufferedImage colorSample = new BufferedImage(
-            16,16,BufferedImage.TYPE_INT_RGB);
+    
     private JLabel imageLabel;
 
-    private Rectangle selection;
-    private boolean dirty = false;
-    private Stroke stroke = new BasicStroke(15,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND,1.7f);
+    private Stroke stroke = new BasicStroke(15,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND,10.0F);
+    private Stroke strokeFino = new BasicStroke(1,BasicStroke.CAP_SQUARE,BasicStroke.JOIN_ROUND,10.0F);
+    
     private RenderingHints renderingHints;
-    private boolean start = true;
 
     /**
      * @wbp.parser.entryPoint
      */
     public JComponent getGui() {
     	System.out.println("getGUI");
-        if (gui==null) {
+        
             Map<Key, Object> hintsMap = new HashMap<RenderingHints.Key,Object>();
             hintsMap.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             hintsMap.put(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
@@ -63,76 +59,51 @@ public class JF_Board {
             gui = new JPanel(new BorderLayout(4,4));
             gui.setBorder(new EmptyBorder(5,3,5,3));
 
-            JPanel imageView = new JPanel(new GridBagLayout());
+            JPanel imageView = new JPanel();
             imageView.setPreferredSize(new Dimension(480,320));
-            
-            
-//////////////
-            
-      		BufferedImage MycanvasImage;
-      		BufferedImage img = null;
-      		try {
-      			img = ImageIO.read(new File("C:/Users/acunaarl/Documents/GitHub/Japaneasy/src/img/year.jpg"));
-      		} catch (IOException ex) {
-      			ex.printStackTrace();
-      		}
-      		MycanvasImage = img;
-      		
-//////////////
-            
             
             
       		
       		imageLabel = new JLabel(new ImageIcon(canvasImage));
+      		imageLabel.setBounds(10, 44, 320, 240);  //Posición del cuadro {x,y,W,H}
             JScrollPane imageScroll = new JScrollPane(imageView);
+            imageView.setLayout(null);
             imageView.add(imageLabel);
-            imageLabel.addMouseMotionListener(new ImageMouseMotionListener());
-            imageLabel.addMouseListener(new ImageMouseListener());
-            gui.add(imageScroll,BorderLayout.CENTER);
-
-            JToolBar tb = new JToolBar();
-            tb.setFloatable(false);
-
-            ActionListener clearListener = new ActionListener() {
-                public void actionPerformed(ActionEvent arg0) {
-                    int result = JOptionPane.OK_OPTION;
-                    if (dirty) {
-                        result = JOptionPane.showConfirmDialog(
-                                gui, "Erase the current painting?");
-                    }
-                    if (result==JOptionPane.OK_OPTION) {
-                        clear(canvasImage);
-                    }
-                }
-            };
-            JButton clearButton = new JButton("Clear");
-            tb.add(clearButton);
-            clearButton.addActionListener(clearListener);
-
-            gui.add(tb, BorderLayout.PAGE_START);
+            
             
             JButton btnMedir = new JButton("Medir");
+            btnMedir.setBounds(362, 44, 65, 21);
+            imageView.add(btnMedir);
             btnMedir.addActionListener(new ActionListener() {
             	public void actionPerformed(ActionEvent arg0) {
             		medir();
             	}
             });
-            tb.add(btnMedir);
+            
+            
+            imageLabel.addMouseMotionListener(new ImageMouseMotionListener());
+            imageLabel.addMouseListener(new ImageMouseListener());
+            gui.add(imageScroll,BorderLayout.CENTER);
+
+            ActionListener clearListener = new ActionListener() {
+                public void actionPerformed(ActionEvent arg0) {
+                    clear(canvasImage);
+                }
+            };
+            
 
             JToolBar tools = new JToolBar(JToolBar.VERTICAL);
             tools.setFloatable(false);
-            final JRadioButton draw = new JRadioButton("Draw");
-            draw.setSelected(true);       
-            tools.add(draw); 
-
-
+            JButton clearButton = new JButton("Clear");
+            clearButton.addActionListener(clearListener);
+            tools.add(clearButton);
+            
 
 
             gui.add(tools, BorderLayout.LINE_END);
-            clear(colorSample);
             clear(canvasImage);
             
-        }
+        
 
         return gui;
     }
@@ -144,9 +115,11 @@ public class JF_Board {
         g.setRenderingHints(renderingHints);
         g.setColor(colorWhite);                                         // COLOR DEL FONDO
         g.fillRect(0, 0, bi.getWidth(), bi.getHeight());
-
         g.dispose();
         imageLabel.repaint();
+        
+        ////
+        DARLE(canvasImage);
     }
    
     
@@ -158,7 +131,7 @@ public class JF_Board {
         int imgW, imgH;
         System.out.println(imageLabel.getHeight());
         System.out.println(imageLabel.getWidth());
-  	  Icon icon = imageLabel.getIcon();
+  	    Icon icon = imageLabel.getIcon();
         imgW = icon.getIconWidth();
         imgH = icon.getIconHeight();
         //this.setPreferredSize(new Dimension(imgW * 10, imgH * 10));
@@ -181,11 +154,11 @@ public class JF_Board {
           	  int  green = (clr & 0x0000ff00) >> 8;
           	  int  blue  =  clr & 0x000000ff;
           	  
-          	  if (red==0 && red==0 && red==0)
+          	  if (red==0 && green==0 && blue==0)
           		  negro = negro + 1;
-          	  if (red==150 && red==150 && red==150)
+          	  if (red==150 && green==150 && blue==150)
         		  gris = gris + 1;
-          	  if (red==255 && red==255 && red==255)
+          	  if (red==255 && green==255 && blue==255)
         		  blanco = blanco + 1;
            }
         }
@@ -203,41 +176,16 @@ public class JF_Board {
         this.originalImage = image;
         int w = image.getWidth();
         int h = image.getHeight();
-        canvasImage = new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
+        canvasImage = new BufferedImage(w,h,BufferedImage.TYPE_INT_RGB);  //ANTES TYPE_INT_ARGB
 
         Graphics2D g = this.canvasImage.createGraphics();
         g.setRenderingHints(renderingHints);
         g.drawImage(image, 0, 0, gui);
-        g.dispose();
-
-        selection = new Rectangle(0,0,w,h); 
-        if (this.imageLabel!=null) {
-            imageLabel.setIcon(new ImageIcon(canvasImage));
-            this.imageLabel.repaint();
-        }
-        if (gui!=null) {
-            gui.invalidate();
-        }
-        
-        
+        g.dispose(); 
     }
 
 
-    public boolean canExit() {
-    	System.out.println("canExit");
-        boolean canExit = false;
-        SecurityManager sm = System.getSecurityManager();
-        if (sm==null) {
-            canExit = true;
-        } else {
-            try {
-                sm.checkExit(0);
-                canExit = true; 
-            } catch(Exception stayFalse) {
-            }
-        }
-        return canExit;
-    }
+    
 
 
     /**
@@ -256,12 +204,12 @@ public class JF_Board {
                 }
                 JF_Board bp = new JF_Board();
 
-                JFrame f = new JFrame("DooDoodle!");
+                JFrame f = new JFrame("Japaneasy");
                 f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 f.setLocationByPlatform(true);
 
                 f.setContentPane(bp.getGui());
-
+                
                 f.pack();
                 f.setMinimumSize(f.getSize());
                 f.setVisible(true);
@@ -271,21 +219,76 @@ public class JF_Board {
     }
     
     
+    public void DARLE(BufferedImage canvas){
+    	System.out.println("DARLE");
+    
+    	BufferedImage img = null;
+    	try {
+  			img = ImageIO.read(new File("C:/Users/acunaarl/Documents/GitHub/Japaneasy/src/img/year.png"));
+  		} catch (IOException ex) {
+  			ex.printStackTrace();
+  		}
+    	Graphics2D imgG = img.createGraphics();
+    	
+    	Graphics2D canvasG = canvas.createGraphics();
+    	
+    	
+    	for(int x=1; x<320; x++){
+        	  for(int y=1; y<240; y++){
+        		  // Getting pixel color by position x and y 
+            	  int pixel=  img.getRGB(x,y); 
+            	  int  red   = (pixel & 0x00ff0000) >> 16;
+            	  int  green = (pixel & 0x0000ff00) >> 8;
+            	  int  blue  =  pixel & 0x000000ff;
+            	  
+            	  if (!(red==255 && green==255 && blue==255)){   // WHITE COLOR
+            	  //if (red==150 && green==150 && blue==150){
+            		  canvasG.setColor(colorGray);
+            		  canvasG.setStroke(strokeFino);
+            		  canvasG.drawLine(x, y, x, y);
+            	  }
+             }
+          }
+    	
+    	
+    	
+    	
+    	imgG.dispose();
+        canvasG.dispose();
+        imageLabel.repaint();
+    	
+
+/*        
+  		BufferedImage MycanvasImage;
+  		BufferedImage img = null;
+  		try {
+  			img = ImageIO.read(new File("C:/Users/acunaarl/Documents/GitHub/Japaneasy/src/img/year.jpg"));
+  		} catch (IOException ex) {
+  			ex.printStackTrace();
+  		}
+  		MycanvasImage = img;
+  		
+  */     
+  		
+  		
+  		
+    	
+    }
    
     public void draw(Point point) {
-    	System.out.println("draw");
+    	//System.out.println("draw");
         Graphics2D g = this.canvasImage.createGraphics();
         g.setRenderingHints(renderingHints);
         g.setColor(this.colorBlack);
         g.setStroke(stroke);
-        System.out.println("point X = " + point.x);
-        System.out.println("point Y = " + point.y);
+        //System.out.println("point X = " + point.x);
+        //System.out.println("point Y = " + point.y);
         int n = 0; //Thick of the point
         g.drawLine(point.x, point.y, point.x+n, point.y+n);
         g.dispose();
         
         
-        mierda();
+        //mierda();
         
         this.imageLabel.repaint();
         
@@ -298,7 +301,12 @@ public class JF_Board {
         if(((canvasImage.getRGB(50, 50) & 0x00ff0000) >> 16 )== 0 ){
         	
         } else {
-        	canvasImage.setRGB(50, 50, rgb);
+        	for (int i=0; i < 50; i++){
+        		for (int j=0; j < 50; j++){
+        			canvasImage.setRGB(i+50 , j+50 , rgb);
+        			canvasImage.setRGB(i+100, j+100, BufferedImage.TYPE_INT_RGB);
+                }
+        	}
         }
         System.out.println("DIAY");
     }
