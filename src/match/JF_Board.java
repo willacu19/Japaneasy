@@ -27,8 +27,8 @@ public class JF_Board {
     private JPanel gui;
     
     // Image boundaries [width x height]
-    private int width = 320;
-    private int height = 240;
+    static private int width = 540;
+    static private int height = 540;
     
     // Image used to make changes.
     private BufferedImage canvasImage;
@@ -41,9 +41,10 @@ public class JF_Board {
     // The color used to make a carbon copy of the images
     private Color colorWhite = new Color(255, 255, 255); //WHITE COLOR
     private Color colorGray = new Color(150, 150, 150); //GRAY COLOR
+    private Color colorGrayBG = new Color(200, 200, 200); //BACKGROUND GRAY COLOR
     
     // Strokes to hand drawing and carbon copies
-    private Stroke stroke = new BasicStroke(15,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND,10.0F);
+    private Stroke stroke = new BasicStroke(60,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND,10.0F);
     private Stroke pixelStroke = new BasicStroke(1,BasicStroke.CAP_SQUARE,BasicStroke.JOIN_ROUND,10.0F);
     
     // RenderingHints options
@@ -72,7 +73,7 @@ public class JF_Board {
 
             // Set the canvasImage as Label icon
       		imageLabel = new JLabel(new ImageIcon(canvasImage));
-      		imageLabel.setBounds(1, 1, width+1, height+1);
+      		imageLabel.setBounds(0, 0, width, height);
       		
       		// Initialize the imageView Panel boundaries [width x height].
             JPanel imageView = new JPanel();
@@ -82,7 +83,7 @@ public class JF_Board {
             
       		// Creates the ScrollPane and adds the imageView to it.
       		JScrollPane imageScroll = new JScrollPane(imageView);
-      		imageScroll.setBounds(1, 1, width+5, height+5);
+      		imageScroll.setBounds(1, 1, width, height);
       		
       		// Add the mouse listeners to imageLabel 
       		imageLabel.addMouseMotionListener(new ImageMouseMotionListener());
@@ -97,7 +98,7 @@ public class JF_Board {
             };
             // Creates the Clear button
             JButton clearButton = new JButton("Clear");
-            clearButton.setBounds(130, 250, 60, 30);
+            clearButton.setBounds(250, 550, 60, 30);
             clearButton.addActionListener(clearListener);
     
             // Adds the imageScroll and ClearButton to the gui panel.
@@ -107,7 +108,7 @@ public class JF_Board {
            
             lbScore.setHorizontalAlignment(SwingConstants.CENTER);
             lbScore.setFont(new Font("Tahoma", Font.PLAIN, 30));
-            lbScore.setBounds(200, 250, 104, 27);
+            lbScore.setBounds(350, 550, 104, 27);
             gui.add(lbScore);
             
             // Clear the canvasImage at the start.
@@ -118,7 +119,7 @@ public class JF_Board {
     // Set the image to the canvas and pastes it to the GUI.
     public void setImage(BufferedImage image) {
         // Initialize the canvasImage with the image values.
-        canvasImage = new BufferedImage(width+1,height+1,BufferedImage.TYPE_INT_RGB);  //ANTES TYPE_INT_ARGB
+        canvasImage = new BufferedImage(width,height,BufferedImage.TYPE_INT_RGB);  //ANTES TYPE_INT_ARGB
         // Creates a 2D graph from canvasImage.
         Graphics2D g = this.canvasImage.createGraphics();
         g.setRenderingHints(renderingHints);
@@ -132,7 +133,7 @@ public class JF_Board {
     public void clear(BufferedImage canvas){
     	BufferedImage img = null;
         try {
-      		img = ImageIO.read(new File("C:/Users/acunaarl/Documents/GitHub/Japaneasy/src/img/year.png"));
+      		img = ImageIO.read(new File("C:/Users/acunaarl/Documents/GitHub/Japaneasy/src/img/999.png"));
       	} catch (IOException ex) {
       		ex.printStackTrace();
       	}
@@ -141,9 +142,9 @@ public class JF_Board {
         Graphics2D canvasG = canvas.createGraphics();
         
         
-        for(int x=1; x<320; x++){
-        	for(int y=1; y<240; y++){
-            	  // Getting pixel color by position x and y 
+        for(int x=0; x<width; x++){
+        	for(int y=0; y<height; y++){
+            	  // Getting pixel color by position x and y
                	  int pixel=  img.getRGB(x,y); 
                	  int  red   = (pixel & 0x00ff0000) >> 16;
                	  int  green = (pixel & 0x0000ff00) >> 8;
@@ -152,7 +153,9 @@ public class JF_Board {
                	  if (red==255 && green==255 && blue==255){   // WHITE COLOR
                	  //if (red==150 && green==150 && blue==150){
                		  canvasG.setColor(colorWhite);
-               	  } else {
+               	  } else if (red==200 && green==200 && blue==200){   // BACKGROUND GRAY COLOR
+               		  canvasG.setColor(colorGrayBG);
+               	  } else{
                		  canvasG.setColor(colorGray);
                	  }
                	  
@@ -245,7 +248,7 @@ public class JF_Board {
         else if (negro < (black * 0.90) && gris < (gray * 0.22)){
         	lbScore.setText("lllllllll.");
         }
-        else if (negro > (black * 1.10) && gris < (gray * 0.02)){
+        else if (negro > (black * 1.08) && gris < (gray * 0.02)){
         	lbScore.setText("llllllllll");
         	JOptionPane.showMessageDialog(gui, "Well done!!!");
         } 
@@ -282,7 +285,7 @@ public class JF_Board {
         medir();
     }
     
-    
+    /*
     public void mierda(){
     	Color myWhite = new Color(150, 0, 0); // Color white
         int rgb = myWhite.getRGB();
@@ -297,7 +300,7 @@ public class JF_Board {
         	}
         }
     }
-    
+    */
 
     class ImageMouseListener extends MouseAdapter {
         @Override
@@ -345,7 +348,7 @@ public class JF_Board {
                 f.setContentPane(bp.getGui());
                 
                 f.pack();
-                f.setSize(343, 325);
+                f.setSize(width+18, height+100);
                 f.setMinimumSize(f.getSize());
                 f.setVisible(true);
             }
