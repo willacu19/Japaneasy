@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import java.sql.*;
+
 import java.util.ArrayList;
 
 import javax.swing.JTextField;
@@ -18,6 +19,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
+import javax.swing.JLayeredPane;
 
 public class JF_DBconnection extends JFrame {
 
@@ -57,7 +59,7 @@ public class JF_DBconnection extends JFrame {
 	 */
 	public JF_DBconnection() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 625, 507);
+		setBounds(100, 100, 326, 473);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -66,19 +68,20 @@ public class JF_DBconnection extends JFrame {
 		txtB = new JTextField();
 		txtB.setHorizontalAlignment(SwingConstants.CENTER);
 		txtB.setFont(new Font("MS PMincho", Font.BOLD, 20));
-		txtB.setBounds(256, 374, 86, 37);
+		txtB.setBounds(111, 316, 86, 37);
 		contentPane.add(txtB);
 		txtB.setColumns(10);
 		
 		JLabel lbA = new JLabel(dbGet());
 		lbA.setFont(new Font("MS PMincho", Font.PLAIN, 70));
 		lbA.setHorizontalAlignment(SwingConstants.CENTER);
-		lbA.setBounds(174, 259, 250, 87);
+		lbA.setBounds(31, 212, 250, 87);
 		contentPane.add(lbA);
 		
 		JLabel lbScore = new JLabel("Score 0/0");
+		lbScore.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		lbScore.setHorizontalAlignment(SwingConstants.CENTER);
-		lbScore.setBounds(403, 234, 96, 14);
+		lbScore.setBounds(75, 164, 170, 37);
 		contentPane.add(lbScore);
 		
 		JButton btnCheck = new JButton("check");
@@ -93,10 +96,16 @@ public class JF_DBconnection extends JFrame {
 				txtB.setText("");
 			}
 		});
-		btnCheck.setBounds(253, 422, 89, 23);
+		btnCheck.setBounds(111, 364, 89, 23);
 		contentPane.add(btnCheck);
 		
+		JLayeredPane layeredPane = new JLayeredPane();
+		layeredPane.setBounds(31, 40, 119, 113);
+		contentPane.add(layeredPane);
+		
 		JRadioButton rbQjpH = new JRadioButton("Hiragana");
+		rbQjpH.setBounds(6, 7, 109, 23);
+		layeredPane.add(rbQjpH);
 		rbQjpH.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				q= "jph";
@@ -105,10 +114,10 @@ public class JF_DBconnection extends JFrame {
 		});
 		rbQjpH.setSelected(true);
 		buttonGroupQ.add(rbQjpH);
-		rbQjpH.setBounds(156, 57, 109, 23);
-		contentPane.add(rbQjpH);
 		
 		JRadioButton rbQjpK = new JRadioButton("Katakana");
+		rbQjpK.setBounds(6, 33, 109, 23);
+		layeredPane.add(rbQjpK);
 		rbQjpK.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				q= "jpk";
@@ -116,10 +125,10 @@ public class JF_DBconnection extends JFrame {
 			}
 		});
 		buttonGroupQ.add(rbQjpK);
-		rbQjpK.setBounds(156, 83, 109, 23);
-		contentPane.add(rbQjpK);
 		
 		JRadioButton rbQsp = new JRadioButton("Español");
+		rbQsp.setBounds(6, 56, 109, 23);
+		layeredPane.add(rbQsp);
 		rbQsp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				q= "sp";
@@ -127,10 +136,10 @@ public class JF_DBconnection extends JFrame {
 			}
 		});
 		buttonGroupQ.add(rbQsp);
-		rbQsp.setBounds(156, 106, 109, 23);
-		contentPane.add(rbQsp);
 		
 		JRadioButton rbQen = new JRadioButton("English");
+		rbQen.setBounds(6, 80, 109, 23);
+		layeredPane.add(rbQen);
 		rbQen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				q= "en";
@@ -138,10 +147,22 @@ public class JF_DBconnection extends JFrame {
 			}
 		});
 		buttonGroupQ.add(rbQen);
-		rbQen.setBounds(156, 130, 109, 23);
-		contentPane.add(rbQen);
+		
+		JLabel lblQuestion = new JLabel("Question");
+		lblQuestion.setBounds(31, 24, 46, 14);
+		contentPane.add(lblQuestion);
+		
+		JLabel lblAnswer = new JLabel("Answer");
+		lblAnswer.setBounds(174, 24, 46, 14);
+		contentPane.add(lblAnswer);
+		
+		JLayeredPane layeredPane_1 = new JLayeredPane();
+		layeredPane_1.setBounds(160, 40, 119, 113);
+		contentPane.add(layeredPane_1);
 		
 		JRadioButton rbAjpH = new JRadioButton("Hiragana");
+		rbAjpH.setBounds(6, 7, 109, 23);
+		layeredPane_1.add(rbAjpH);
 		rbAjpH.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				a= "jph";
@@ -149,38 +170,36 @@ public class JF_DBconnection extends JFrame {
 		});
 		rbAjpH.setSelected(true);
 		buttonGroupA.add(rbAjpH);
-		rbAjpH.setBounds(335, 57, 109, 23);
-		contentPane.add(rbAjpH);
 		
 		JRadioButton rbAjpK = new JRadioButton("Katakana");
+		rbAjpK.setBounds(6, 33, 109, 23);
+		layeredPane_1.add(rbAjpK);
 		rbAjpK.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				a= "jpk";
 			}
 		});
 		buttonGroupA.add(rbAjpK);
-		rbAjpK.setBounds(335, 83, 109, 23);
-		contentPane.add(rbAjpK);
 		
 		JRadioButton rbAsp = new JRadioButton("Español");
+		rbAsp.setBounds(6, 56, 109, 23);
+		layeredPane_1.add(rbAsp);
 		rbAsp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				a= "sp";
 			}
 		});
 		buttonGroupA.add(rbAsp);
-		rbAsp.setBounds(335, 106, 109, 23);
-		contentPane.add(rbAsp);
 		
 		JRadioButton rbAen = new JRadioButton("English");
+		rbAen.setBounds(6, 80, 109, 23);
+		layeredPane_1.add(rbAen);
 		rbAen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				a= "en";
 			}
 		});
 		buttonGroupA.add(rbAen);
-		rbAen.setBounds(335, 130, 109, 23);
-		contentPane.add(rbAen);
 		
 		
 	}
@@ -189,7 +208,6 @@ public class JF_DBconnection extends JFrame {
 	public String dbGet(){
 		String randString = "";
 		try {
-			
 			Class.forName("com.mysql.jdbc.Driver");  
 				
 			Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/japaneasy?useUnicode=true&characterEncoding=utf-8","root","");

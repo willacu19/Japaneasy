@@ -49,6 +49,7 @@ public class JF_Board {
     // RenderingHints options
     private RenderingHints renderingHints;
 
+    JLabel lbScore = new JLabel("..........");
     
     // Initiates all the GUI components
     /**
@@ -103,6 +104,12 @@ public class JF_Board {
             gui.add(imageScroll);
             gui.add(clearButton);
             
+           
+            lbScore.setHorizontalAlignment(SwingConstants.CENTER);
+            lbScore.setFont(new Font("Tahoma", Font.PLAIN, 30));
+            lbScore.setBounds(200, 250, 104, 27);
+            gui.add(lbScore);
+            
             // Clear the canvasImage at the start.
             clear(canvasImage);
         return gui;
@@ -156,11 +163,19 @@ public class JF_Board {
         imgG.dispose();
         canvasG.dispose();
         imageLabel.repaint();
+        black = 0;
+        gray = 0;
+        lbScore.setText("..........");
         }
   
     
-    public void medir(){    	
-  	  BufferedImage img;
+    public double black = 0;
+    public double gray = 0;
+    	
+    public void medir(){ 
+    	
+    	
+  	    BufferedImage img;
         int imgW, imgH;
   	    Icon icon = imageLabel.getIcon();
         imgW = icon.getIconWidth();
@@ -177,8 +192,8 @@ public class JF_Board {
     	int gris = 0;
     	int negro = 0;
     	  
-        for(int x=1; x<160; x++){
-      	  for(int y=1; y<120; y++){
+        for(int x=0; x<width; x++){
+      	  for(int y=0; y<height; y++){
       		  // Getting pixel color by position x and y 
           	  int clr=  img.getRGB(x,y); 
           	  int  red   = (clr & 0x00ff0000) >> 16;
@@ -193,12 +208,50 @@ public class JF_Board {
         		  blanco = blanco + 1;
            }
         }
-        System.out.println("Blanco " + blanco);
-        System.out.println("Gris " + gris);
-        System.out.println("Negro " + negro);
+        //System.out.println("Blanco " + blanco);
+        //System.out.println("Gris " + gris);
+        //System.out.println("Negro " + negro);
   	  
-        if (negro >= 1846){
+        if (black==0 && gray == 0) {
+        	black = gris * 1.40;
+        	gray = gris;
+    	}
+
+        
+        if (negro < black*0.10 && gris < gray){
+        	lbScore.setText("l.........");
+        }
+        else if (negro < (black * 0.20) && gris < (gray * 0.92)){
+        	lbScore.setText("ll........");
+        }
+        else if (negro < (black * 0.30) && gris < (gray * 0.82)){
+        	lbScore.setText("lll.......");
+        }
+        else if (negro < (black * 0.40) && gris < (gray * 0.72)){
+        	lbScore.setText("llll......");
+        }
+        else if (negro < (black * 0.50) && gris < (gray * 0.62)){
+        	lbScore.setText("lllll.....");
+        }
+        else if (negro < (black * 0.60) && gris < (gray * 0.52)){
+        	lbScore.setText("llllll....");
+        }
+        else if (negro < (black * 0.70) && gris < (gray * 0.42)){
+        	lbScore.setText("lllllll...");
+        }
+        else if (negro < (black * 0.80) && gris < (gray * 0.32)){
+        	lbScore.setText("llllllll..");
+        }
+        else if (negro < (black * 0.90) && gris < (gray * 0.22)){
+        	lbScore.setText("lllllllll.");
+        }
+        else if (negro > (black * 1.10) && gris < (gray * 0.02)){
+        	lbScore.setText("llllllllll");
         	JOptionPane.showMessageDialog(gui, "Well done!!!");
+        } 
+        else if (negro > (black * 1.15)){
+        	JOptionPane.showMessageDialog(gui, "Hold your hourses!!!");
+        	clear(canvasImage);
         }
         
         
@@ -226,7 +279,7 @@ public class JF_Board {
         g.dispose();
         
         this.imageLabel.repaint();
-        
+        medir();
     }
     
     
@@ -299,6 +352,5 @@ public class JF_Board {
         };
         SwingUtilities.invokeLater(r);
     }
-    
 }
 
